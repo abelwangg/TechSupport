@@ -17,21 +17,49 @@
 
 /* TODO 1 */
 Node *create_question_node(const char *question) {
-    return NULL;
+    Node *n = (Node*)malloc(sizeof(Node));
+    if (!n) {
+        return NULL;
+    }
+
+    n->text = strdup(question);
+    n->yes = NULL;
+    n->no = NULL;
+    n->isQuestion = 1;
+
+    return n;
 }
 
 /* TODO 2 */
 Node *create_solution_node(const char *solution) {
-    return NULL;
+    Node *n = (Node*)malloc(sizeof(Node));
+    if (!n) return NULL;
+
+    n->text = strdup(solution);
+    n->yes = NULL;
+    n->no = NULL;
+    n->isQuestion = 0;
+
+    return n;
 }
 
 /* TODO 3  (recursion allowed) */
 void free_tree(Node *node) {
+    if (node == NULL) return;
+
+    //have to do postorder, free children before parent
+    free_tree(node->yes);
+    free_tree(node->no);
+
+    //free duplicated string, then node itself
+    free(node->text);
+    free(node);
 }
 
 /* TODO 4  (recursion allowed) */
 int count_nodes(Node *root) {
-    return 0;
+    if (root == NULL) return 0;
+    return (1 + count_nodes(root->yes) + count_nodes(root->no));
 }
 
 
@@ -39,25 +67,48 @@ int count_nodes(Node *root) {
 
 /* TODO 5 */
 void fs_init(FrameStack *s) {
+    s->size = 0;
+    s->capacity = 16;   //16 prob a good starting default
+    s->frames = (Frame*)malloc(s->capacity * sizeof(Frame));
 }
 
 /* TODO 6 */
 void fs_push(FrameStack *s, Node *node, int answeredYes) {
+    //check if capacity hit if so double
+    if (s->size >= s->capacity) {
+        s->capacity *= 2;
+        s->frames = (Frame*)realloc(s->frames, s->capacity * sizeof(Frame));
+
+    }
+
+    //do actual function
+    s->frames[s->size].node = node;
+    s->frames[s->size].answeredYes = answeredYes;
+    s->size++;
 }
 
 /* TODO 7 */
 Frame fs_pop(FrameStack *s) {
-    Frame dummy = {NULL, -1};
-    return dummy;
+    if (fs_empty(s)) {
+        Frame dummy = {NULL, -1};
+        return dummy;
+    }
+
+    s->size--;
+    return s->frames[s->size];
 }
 
 /* TODO 8 */
 int fs_empty(FrameStack *s) {
-    return 1;
+    return (s->size == 0);
 }
 
 /* TODO 9 */
 void fs_free(FrameStack *s) {
+    free(s->frames);
+    s->frames = NULL;
+    s->size = 0;
+    s->capacity = 0;
 }
 
 
