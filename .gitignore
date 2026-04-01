@@ -1,0 +1,11 @@
+# Compiled Object files
+*.o
+
+# Executables
+*.exe
+*.out
+*.app
+
+# OS specific files
+.DS_Store
+Thumbs.db
