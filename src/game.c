@@ -167,7 +167,24 @@ void run_diagnosis(void) {
  * Return 1 on success, 0 if the undo stack is empty.
  * ---------------------------------------------------------------- */
 int undo_last_edit(void) {
-    return 0;
+    if (es_empty(&g_undo)) return 0;
+
+    Edit e = es_pop(&g_undo);
+
+    //swap old leaf back into place
+    if (e.parent == NULL) { //edge case: if no parent, put oldLeaf back at root
+        g_root = e.oldLeaf;
+    } else {
+        if (e.wasYesChild == 1) {   //if edit was on yes branch, put oldLeaf back on yes branch. 
+            e.parent->yes = e.oldLeaf;
+        } else {    //Otherwise, put it back on no branch
+            e.parent->no = e.oldLeaf;
+        }
+    }
+
+    //push to redo stack, success
+    es_push(&g_redo, e);
+    return 1;
 }
 
 /* ----------------------------------------------------------------
@@ -175,5 +192,22 @@ int undo_last_edit(void) {
  * Return 1 on success, 0 if the redo stack is empty.
  * ---------------------------------------------------------------- */
 int redo_last_edit(void) {
-    return 0;
+    if (es_empty(&g_redo)) return 0;
+
+    Edit e = es_pop(&g_redo);
+
+    //swap new question back into place
+    if (e.parent == NULL) {
+        g_root = e.newQuestion;
+    } else {
+        if (e.wasYesChild == 1) {
+            e.parent->yes = e.newQuestion;
+        } else {
+            e.parent->no = e.newQuestion;
+        }
+    }
+
+    //push to undo stack, success
+    es_push(&g_undo, e);
+    return 1;
 }
