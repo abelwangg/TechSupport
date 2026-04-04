@@ -25,7 +25,7 @@ $(TEST_EXECUTABLE): $(TEST_OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) $(TEST_OBJECTS) $(EXECUTABLE) $(TEST_EXECUTABLE)
-	rm -f techsupport.dat test_ts.dat test_ts2.dat *.o
+	rm -f test_ts.dat test_ts2.dat *.o
 
 run: $(EXECUTABLE)
 	./$(EXECUTABLE)

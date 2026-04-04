@@ -184,6 +184,7 @@ void test_integrity(void) {
     Node *saved = g_root; g_root = root;
     assert(check_integrity());
 
+    free_tree(root->no);    //original test.c file didn't have this line, but it should to avoid memory leak
     root->no = NULL;
     assert(!check_integrity());
 
