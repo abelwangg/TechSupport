@@ -13,3 +13,6 @@ Thumbs.db
 # Ignore specific Linux/macOS binaries
 run_tests
 techsupport
+
+# Generated binary data files (this is honestly specificly for techsupport.dat)
+*.dat
