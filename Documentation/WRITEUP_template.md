@@ -1,7 +1,7 @@
 # ECE 312 Lab 4 Write-Up: Tech Support Diagnosis Tool
 
-**Name:** [Your Name]
-**EID:** [Your EID]
+**Name:** Jingyuan Wang
+**EID:** jw62882
 **Date:** [Submission Date]
 
 ---
