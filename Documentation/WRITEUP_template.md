@@ -2,7 +2,7 @@
 
 **Name:** Jingyuan Wang
 **EID:** jw62882
-**Date:** [Submission Date]
+**Date:** 4/7/2026
 
 ---
 
@@ -38,7 +38,7 @@ Candidate topics:
 
 *What I considered instead:* Pretty obvious, the I considered trying to link the parent and child nodes immediately in a single pass as I read them from the file.
 
-*Why:* Because the tree is saved using BFS, child nodes are naturally stored later in the file than their parents. If I tried a one-pass design, a parent node might need to point to a child ID that hsn't even been read into memory yet. The two-pass method avoids this by making sure every single node actually exists before I try to connect the nodes together.
+*Why:* Because the tree is saved using BFS, child nodes are naturally stored later in the file than their parents. If I tried a one-pass design, a parent node might need to point to a child ID that hasn't even been read into memory yet. The two-pass method avoids this by making sure every single node actually exists before I try to connect the nodes together.
 
 ---
 
@@ -46,7 +46,7 @@ Candidate topics:
 
 *What I chose:* I chose to keep the disconnected nodes alive in memory when the user hits undo, rather than calling `free()` on them.
 
-*What I considered instead:* Freeing the newly learned question and solution nodes completelly during an undo to save memory space.
+*What I considered instead:* Freeing the newly learned question and solution nodes completely during an undo to save memory space.
 
 *Why:* If I freed the nodes, the `g_redo` stack would be left holding dangling pointers to dead memory. If the user wanted the redo, the program would crash instantly. By keeping them alive and just swapping the pointers, I can let the user travel safely back and forth in time. Honestly, the only time we permanently delete future edits is when a brand new edit creates an alternate timeline. This logic is kind of complicated, but it needs to be this way.
 
@@ -62,7 +62,7 @@ Amortized O(1). When pushing to the stack, we usually just drop the item into th
 
 ### 2.2 — Hash table average-case lookup
 
-Avg case is O(1). djb2 hash function mathematically scramble the string and jump instantly to the correct bucket index. B/c we're separate chaining and our hash function spreads the strings out evenly across the table, the linked list inside any single buckiet stays very short. Finding the item takes constant time.
+Avg case is O(1). djb2 hash function mathematically scramble the string and jump instantly to the correct bucket index. B/c we're separate chaining and our hash function spreads the strings out evenly across the table, the linked list inside any single bucket stays very short. Finding the item takes constant time.
 
 ### 2.3 — Diagnosis traversal (best, worst, average)
 
@@ -76,9 +76,9 @@ Average case: O(log n). Tree is relatively balanced. The height is logarithmic r
 
 ### 2.4 — `find_shortest_path` time and space
 
-Time complexity: O(n). The BFS explores the tree to drop breadcrumps, checking every node once in the worst case to find the two target solutions. Tracing the path arrays leaves->root takes O(h) steps at most. Overall time is linear.
+Time complexity: O(n). The BFS explores the tree to drop breadcrumbs, checking every node once in the worst case to find the two target solutions. Tracing the path arrays leaves->root takes O(h) steps at most. Overall time is linear.
 
-Space complexity: O(n). I dynamically allocated a `PathNode` array sized perfectly to `total_nodes` to store breadcrumbs. The two integer path arrays also scale with the depth of the tree, so meaning usage scales linearly with size of the knowledge base.
+Space complexity: O(n). I dynamically allocated a `PathNode` array sized perfectly to `total_nodes` to store breadcrumbs. The two integer path arrays also scale with the depth of the tree, so memory usage scales linearly with size of the knowledge base.
 
 ---
 
@@ -114,11 +114,29 @@ In `find_shortest_path`, I initialized the child ID tracker to -1. When recordin
 
 1. How many nodes does your submitted `techsupport.dat` contain?
 
+My submitted knowledge base tree contains 35 nodes.
+
 2. What categories of problems did you teach the program? Give one example question/solution pair for each category.
+
+* **Network/Internet:** Are you getting a 'DNS_PROBE_FINISHED_NXDOMAIN' error in your browser? 
+  * Flush your DNS cache.
+* **Hardware/Thermals:** Is the computer feeling extremely hot and shutting down randomly? 
+  * Clean the dust out of your computer's cooling fans.
+* **Software/OS:** Are you seeing a Blue Screen of Death with a stop code? 
+  * Boot into Safe Mode and roll back recent updates.
 
 3. Look at the tree with `[V]`.  Are the questions you taught it good distinguishing questions — do they split the remaining candidates roughly in half?  Name one question you would improve and describe what you would replace it with.
 
+Right now, my questions don't split the candidates in half well. Because I kept teaching it highly specific issues whenever it guessed "Restart your computer," the tree is lopsided. It acts more like a linear checklist of specific symptoms rather than a balanced binary search tree.
+
+To improve it, I would replace a narrow question like "Does the computer completely fail to turn on?" with a much broader question like "Is the issue hardware or software?" This would allow the tree to eliminate half of the remaining possibilities immediately.
+
 4. Describe one `[F]ind Path` result.  What were the two solutions, what was the shared path, and did the output match your expectation?
+
+* **Solution A:** "Boot into safe mode and roll back recent updates."
+* **Solution B:** "Clean the dust out of your computer's cooling fans."
+* **Shared Path:** Both pass through the initial root `[NO]` branch and several subsequent `[NO]` branches regarding power, display, and audio. Until they reach the performance question.
+* **Divergence:** The LCA: "Is the computer running really really slowly?". Branching `[YES]` led down the path to the BSOD fix (Solution A), while branching `[NO]` continued down the general hardware/software troubleshooting path toward cleaning the fans (Solution B). The output matched my expectations and correctly identified the fork.
 
 ---
 
@@ -135,7 +153,7 @@ The hardest part was definitely getting the learning phase pointer math right in
 
 Writing the iterative diagnosis loop taught me that recursion is basically the computer managing a stack for you under the hood. Building the `FrameStack` manually showed that you can replicate any recursive function with a simple while loop and an array.
 
-The biggest "click" moment was probably when my `find_shortest` path printed out the exact spit in the tree visually. Seeing the LCA logic actually working was awesome.
+The biggest "click" moment was probably when my `find_shortest` path printed out the exact split in the tree visually. Seeing the LCA logic actually working was awesome.
 
 ---
 
@@ -143,15 +161,13 @@ The biggest "click" moment was probably when my `find_shortest` path printed out
 
 | Date | Hours | What you worked on |
 |------|-------|--------------------|
-| | | |
-| | | |
-| | | |
-| | | |
-| | | |
-| | | |
-| | | |
-| | | |
-| | | |
-| 4/6 | 4 |bleh |
+| 3/30 | 5     | Setup, trying to understand lab, basic data structures (Nodes, Queue, Stack)|
+| 3/31 | 4     | Hash table implementation (canonicalize, djb2, put, get, free)|
+| 4/1  | 3     | Persistence|
+| 4/2  | 2.75  | Tree utilities stuff (mostly BFS logic)|
+| 4/3  | 4     | Core diagnosis loop, ncurses UI, learning phase|
+| 4/5  | 4     | Undo/Redo stacks and memory leak fixes, minor bug fixes, tweaks|
+| 4/6  | 2.5   | Building 25-node dataset, writeup stuff|
 
-**Total hours:** ___
+
+**Total hours:** ~25

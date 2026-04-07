@@ -14,5 +14,8 @@ Thumbs.db
 run_tests
 techsupport
 
+techsupport_ref     
+#^^dr. speight executable for reference/testing
+
 # Generated binary data files (this is honestly specificly for techsupport.dat)
 *.dat
