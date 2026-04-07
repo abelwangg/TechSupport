@@ -275,7 +275,7 @@ unsigned h_hash(const char *s) {
     int c;
 
     //loops thru string char by char until it hits null terminator
-    while (c = *s++) {
+    while ((c = *s++)) {
         //hash * 33 + c. bit shifting is faster way to multiply
         hash = ((hash << 5) + hash) + c;
     }
